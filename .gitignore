@@ -1,0 +1,15 @@
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.mvn
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+twitter4j.properties
+Dockerfile
+
