@@ -72,10 +72,10 @@ public class QueryService {
 			
 			ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setDebugEnabled(true)
-			  .setOAuthConsumerKey(System.getenv("")!= null ? System.getenv("TWITTER_CONSUMER_KEY") : propertyfileReader.getProp("TWITTER_CONSUMER_KEY") )
-			  .setOAuthConsumerSecret(System.getenv("")!= null ? System.getenv("TWITTER_CONSUMER_SECRET") : propertyfileReader.getProp("TWITTER_CONSUMER_SECRET") )
-			  .setOAuthAccessToken(System.getenv("")!= null ? System.getenv("TWITTER_ACESS_TOKEN") : propertyfileReader.getProp("TWITTER_ACESS_TOKEN") )
-			  .setOAuthAccessTokenSecret(System.getenv("")!= null ? System.getenv("TWITTER_ACESS_TOKEN_SECRET") : propertyfileReader.getProp("TWITTER_ACESS_TOKEN_SECRET") );
+			  .setOAuthConsumerKey(System.getenv("TWITTER_CONSUMER_KEY")!= null ? System.getenv("TWITTER_CONSUMER_KEY") : propertyfileReader.getProp("TWITTER_CONSUMER_KEY") )
+			  .setOAuthConsumerSecret(System.getenv("TWITTER_CONSUMER_SECRET")!= null ? System.getenv("TWITTER_CONSUMER_SECRET") : propertyfileReader.getProp("TWITTER_CONSUMER_SECRET") )
+			  .setOAuthAccessToken(System.getenv("TWITTER_ACESS_TOKEN")!= null ? System.getenv("TWITTER_ACESS_TOKEN") : propertyfileReader.getProp("TWITTER_ACESS_TOKEN") )
+			  .setOAuthAccessTokenSecret(System.getenv("TWITTER_ACESS_TOKEN_SECRET")!= null ? System.getenv("TWITTER_ACESS_TOKEN_SECRET") : propertyfileReader.getProp("TWITTER_ACESS_TOKEN_SECRET") );
 			TwitterFactory tf = new TwitterFactory(cb.build());
 			Twitter twitter = tf.getInstance();
 	       // Twitter twitter = new TwitterFactory().getInstance();
