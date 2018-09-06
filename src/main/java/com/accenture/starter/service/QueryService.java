@@ -205,7 +205,7 @@ public class QueryService {
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(log, null);
 		ResponseEntity<String> response = restTemplate.exchange("http://"
-				+ getLogServiceUrl() + ":8080/log", HttpMethod.POST,
+				+ getLogServiceUrl() + ":8080/logs/sentiments", HttpMethod.POST,
 				httpEntity, String.class);
 		System.out.println(response);
 		return response;
