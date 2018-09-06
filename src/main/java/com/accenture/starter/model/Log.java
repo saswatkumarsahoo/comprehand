@@ -15,10 +15,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Log implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@JsonProperty("log")
+	@JsonProperty("key")
 	private HashMap<String, Object> values;
 	@JsonProperty("@timestamp")
 	private String timeStamp;
+	
+	private Object data;
 
 	
 	@JsonProperty("hashTag")
@@ -54,5 +56,13 @@ public class Log implements Serializable {
 	
 	public static void main(String[] args) {
 		
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
 	}
 }

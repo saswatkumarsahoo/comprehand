@@ -219,7 +219,7 @@ public class QueryService {
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date date = new Date();
-			log.addValue("log", mapper.readValue(obj.toString(), Object.class));
+			log.setData(mapper.readValue(obj.toString(), Object.class));
 			log.setTimeStamp(sdf.format(date));
 			log.setHandle(query);
 			log.addValue("text", text);
