@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service("esLogService")
 public class LogService {
 	
-	static final String ES_URL = "elas"; 
+	static final String ES_URL = "elasticsearch"; 
 	public Object ingestToEs(String log, String type) {
 		
 		try {

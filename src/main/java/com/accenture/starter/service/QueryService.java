@@ -55,7 +55,7 @@ public class QueryService {
 	static final int count = 10;
 	static long sinceId = 0;
 	static long numberOfTweets = 0;
-	static final String LOG_SERVICE_URL = "localhost";
+	static final String LOG_SERVICE_URL = "log";
 	@Autowired
 	private PropertyfileReader propertyfileReader;
 	@Autowired
