@@ -201,8 +201,7 @@ public class QueryService {
 	}
 
 	private static Object postLog(RestTemplate restTemplate, String log) {
-		System.out.println("postLog"+log);
-		
+		System.out.println("postLog"+log);	
 		HttpEntity<String> httpEntity = new HttpEntity<String>(log, null);
 		ResponseEntity<String> response = restTemplate.exchange("http://"
 				+ getLogServiceUrl() + ":8080/logs/sentiments", HttpMethod.POST,
@@ -220,7 +219,7 @@ public class QueryService {
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date date = new Date();
-			log.addValue("key", mapper.readValue(obj.toString(), Object.class));
+			log.addValue("log", mapper.readValue(obj.toString(), Object.class));
 			log.setTimeStamp(sdf.format(date));
 			log.setHandle(query);
 			log.addValue("text", text);

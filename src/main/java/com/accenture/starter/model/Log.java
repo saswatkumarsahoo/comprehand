@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Log implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@JsonProperty("key")
+	@JsonProperty("log")
 	private HashMap<String, Object> values;
 	@JsonProperty("@timestamp")
 	private String timeStamp;
