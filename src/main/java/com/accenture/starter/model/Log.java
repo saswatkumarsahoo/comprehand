@@ -15,11 +15,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Log implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@JsonProperty("data")
+	@JsonProperty("key")
 	private HashMap<String, Object> values;
 	@JsonProperty("@timestamp")
 	private String timeStamp;
 
+	
 	@JsonProperty("hashTag")
 	private String handle;
 

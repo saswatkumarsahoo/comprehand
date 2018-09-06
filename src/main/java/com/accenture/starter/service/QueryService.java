@@ -3,6 +3,7 @@
  */
 package com.accenture.starter.service;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
+import com.accenture.starter.model.Input;
 import com.accenture.starter.model.Log;
 import com.accenture.starter.util.AwsClientBuilder;
 import com.accenture.starter.util.PropertyfileReader;
@@ -55,7 +57,9 @@ public class QueryService {
 	static final int count = 10;
 	static long sinceId = 0;
 	static long numberOfTweets = 0;
-	static final String LOG_SERVICE_URL = "log";
+	static final String LOG_SERVICE_URL = "34.235.161.148";
+	static final String COMPREHAND_SERVICE_URL = "localhost";
+
 	@Autowired
 	private PropertyfileReader propertyfileReader;
 	@Autowired
@@ -139,6 +143,7 @@ public class QueryService {
 		long maxId = 0;
 		long whileCount = 0;
 		RestTemplate restTemplate = new RestTemplate();
+		Input input = new Input();
 
 		while (getTweets) {
 			try {
@@ -147,51 +152,66 @@ public class QueryService {
 					getTweets = false;
 				} else {
 					int forCount = 0;
-					for (Status status : result.getTweets()) {
-						if (whileCount == 0 && forCount == 0) {
-							sinceId = status.getId();
+					try {
+						for (Status status : result.getTweets()) {
+							if (whileCount == 0 && forCount == 0) {
+								sinceId = status.getId();
+							}
+							input.setText(status.getText());
+							Object data = postText(restTemplate, input);
+							
+							System.out.println("data-"+data);
+							String log = createLog(status.getText(),
+									query.getQuery(),
+									data);
+							System.out.println(postLog(restTemplate, log));
+							if (forCount == result.getTweets().size() - 1) {
+								maxId = status.getId();
+							}
+							forCount++;
 						}
-
-						String log = createLog(
-								status.getText(),
-								query.getQuery(),
-								getKeyPhrases(status.getText(),
-										comprehendClient),
-								detectSentiments(status.getText(),
-										comprehendClient),
-								extractEntities(status.getText(),
-										comprehendClient));
-						HttpEntity<?> httpEntity = new HttpEntity<String>(log,
-								null);
-						System.out.println("*****QueryService URL********"+getLogServiceUrl());
-						ResponseEntity<String> response = restTemplate
-								.exchange("http://" + getLogServiceUrl()+ ":8081/logs/sentiments",
-										HttpMethod.POST, httpEntity,
-										String.class);
-						System.out.println(response);
-						if (forCount == result.getTweets().size() - 1) {
-							maxId = status.getId();
-							System.out.println("maxId= " + maxId);
-						}
-						System.out.println("");
-						forCount++;
+						numberOfTweets = numberOfTweets
+								+ result.getTweets().size();
+						query.setMaxId(maxId - 1);
+					} catch (Exception ex) {
+						System.out.println("Error: " + ex);
+						System.exit(-1);
 					}
-					numberOfTweets = numberOfTweets + result.getTweets().size();
-					query.setMaxId(maxId - 1);
 				}
 			} catch (TwitterException te) {
 				System.out.println("Couldn't connect: " + te);
-				System.exit(-1);
+
 			} catch (Exception e) {
 				System.out.println("Something went wrong: " + e);
 				System.exit(-1);
+
 			}
 			whileCount++;
 		}
 		System.out.println("Total tweets count=======" + numberOfTweets);
 	}
 
-	private String createLog(String text, String query, Object... obj) {
+	private static Object postText(RestTemplate restTemplate, Input input) {
+		HttpEntity<Input> httpEntity = new HttpEntity<Input>(input, null);
+		ResponseEntity<String> response = restTemplate.exchange("http://"
+				+ getComprehandServiceUrl() + ":8081/comprehand",
+				HttpMethod.POST, httpEntity, String.class);
+		System.out.println(response.getBody());
+		return response.getBody();
+	}
+
+	private static Object postLog(RestTemplate restTemplate, String log) {
+		System.out.println("postLog"+log);
+		
+		HttpEntity<String> httpEntity = new HttpEntity<String>(log, null);
+		ResponseEntity<String> response = restTemplate.exchange("http://"
+				+ getLogServiceUrl() + ":8082/log", HttpMethod.POST,
+				httpEntity, String.class);
+		System.out.println(response);
+		return response;
+	}
+
+	private String createLog(String text, String query, Object obj) {
 		Log log = new Log();
 		String jsonLog = null;
 		try {
@@ -200,66 +220,30 @@ public class QueryService {
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date date = new Date();
-			for (int i = 0; i < obj.length; i++) {
-				 if (obj[i].getClass().getSimpleName()
-						.equalsIgnoreCase("ArrayList")
-						&& obj[i].getClass().getSimpleName() != null
-						&& obj.length > 0) {
-
-					@SuppressWarnings("unchecked")
-					ArrayList<Object> array = (ArrayList<Object>) obj[i];
-					if (array != null && array.size() > 0) {
-						log.addValue(array.get(0).getClass().getSimpleName(),obj[i]);
-					}
-
-				} else {
-					log.addValue(obj[i].getClass().getSimpleName(), obj[i]);
-				}
-
-			}
+			log.addValue("key", mapper.readValue(obj.toString(), Object.class));
 			log.setTimeStamp(sdf.format(date));
 			log.setHandle(query);
 			log.addValue("text", text);
 			jsonLog = mapper.writeValueAsString(log);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return jsonLog;
 
 	}
-
 	private static String getLogServiceUrl() {
+		System.out.println(LOG_SERVICE_URL);
 		return System.getenv("LOG_SERVICE_URL") != null ? System
 				.getenv("LOG_SERVICE_URL") : LOG_SERVICE_URL;
 	}
 
-	private static List<KeyPhrase> getKeyPhrases(String text,
-			AmazonComprehend comprehendClient) {
-		DetectKeyPhrasesRequest detectKeyPhrasesRequest = new DetectKeyPhrasesRequest()
-				.withText(text).withLanguageCode("en");
-		DetectKeyPhrasesResult detectKeyPhrasesResult = comprehendClient
-				.detectKeyPhrases(detectKeyPhrasesRequest);
-		return detectKeyPhrasesResult.getKeyPhrases();
-
-	}
-
-	private static DetectSentimentResult detectSentiments(String text,
-			AmazonComprehend comprehendClient) {
-		DetectSentimentRequest detectSentimentRequest = new DetectSentimentRequest()
-				.withText(text).withLanguageCode("en");
-		DetectSentimentResult detectSentimentResult = comprehendClient
-				.detectSentiment(detectSentimentRequest);
-		return detectSentimentResult;
-	}
-
-	private static List<Entity> extractEntities(String text,
-			AmazonComprehend comprehendClient) {
-		DetectEntitiesRequest detectEntitiesRequest = new DetectEntitiesRequest()
-				.withText(text).withLanguageCode("en");
-		DetectEntitiesResult detectEntitiesResult = comprehendClient
-				.detectEntities(detectEntitiesRequest);
-		return detectEntitiesResult.getEntities();
+	private static String getComprehandServiceUrl() {
+		return System.getenv("COMPREHAND_SERVICE_URL") != null ? System
+				.getenv("COMPREHAND_SERVICE_URL") : COMPREHAND_SERVICE_URL;
 	}
 
 }
