@@ -67,10 +67,6 @@ public class QueryService {
 	public CompletableFuture<?> findTweets(String query)
 			throws InterruptedException {
 
-		System.out.println(System.getenv("TWITTER_CONSUMER_KEY"));
-		System.out.println(System.getenv("TWITTER_CONSUMER_SECRET"));
-		System.out.println(System.getenv("TWITTER_ACCESS_TOKEN"));
-		System.out.println(System.getenv("TWITTER_ACCESS_TOKEN_SECRET"));
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 				.setOAuthConsumerKey(
@@ -167,6 +163,7 @@ public class QueryService {
 										comprehendClient));
 						HttpEntity<?> httpEntity = new HttpEntity<String>(log,
 								null);
+						System.out.println("*****QueryService URL********"+getLogServiceUrl());
 						ResponseEntity<String> response = restTemplate
 								.exchange("http://" + getLogServiceUrl()+ ":8080/logs/sentiments",
 										HttpMethod.POST, httpEntity,

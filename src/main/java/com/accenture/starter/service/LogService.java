@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service("esLogService")
 public class LogService {
 	
-	static final String ES_URL = "34.235.161.148"; 
+	static final String ES_URL = "elas"; 
 	public Object ingestToEs(String log, String type) {
 		
 		try {
@@ -33,6 +33,7 @@ public class LogService {
 			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 			RestTemplate restTemplate = new RestTemplate();
 			HttpEntity<?> httpEntity = new HttpEntity<String>(log, null);
+			System.out.println("******ES URL********"+getEsUrl());
 			ResponseEntity<String> response = restTemplate.exchange("http://"+ getEsUrl() + ":9200/" + getEsIndex() + "/"+type,
 					HttpMethod.POST, httpEntity, String.class);
 			System.out.println(response.getBody());
