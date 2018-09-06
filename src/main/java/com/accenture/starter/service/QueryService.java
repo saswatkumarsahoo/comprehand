@@ -68,9 +68,9 @@ public class QueryService {
 			throws InterruptedException {
 
 		System.out.println(System.getenv("TWITTER_CONSUMER_KEY"));
-		System.getenv("TWITTER_CONSUMER_SECRET");
-		System.getenv("TWITTER_ACCESS_TOKEN");
-		System.getenv("TWITTER_ACCESS_TOKEN_SECRET");
+		System.out.println(System.getenv("TWITTER_CONSUMER_SECRET"));
+		System.out.println(System.getenv("TWITTER_ACCESS_TOKEN"));
+		System.out.println(System.getenv("TWITTER_ACCESS_TOKEN_SECRET"));
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 				.setOAuthConsumerKey(
