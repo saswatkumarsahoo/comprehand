@@ -67,6 +67,10 @@ public class QueryService {
 	public CompletableFuture<?> findTweets(String query)
 			throws InterruptedException {
 
+		System.out.println(System.getenv("TWITTER_CONSUMER_KEY"));
+		System.getenv("TWITTER_CONSUMER_SECRET");
+		System.getenv("TWITTER_ACCESS_TOKEN");
+		System.getenv("TWITTER_ACCESS_TOKEN_SECRET");
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 				.setOAuthConsumerKey(
