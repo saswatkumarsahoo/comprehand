@@ -165,7 +165,7 @@ public class QueryService {
 								null);
 						System.out.println("*****QueryService URL********"+getLogServiceUrl());
 						ResponseEntity<String> response = restTemplate
-								.exchange("http://" + getLogServiceUrl()+ ":8080/logs/sentiments",
+								.exchange("http://" + getLogServiceUrl()+ ":8081/logs/sentiments",
 										HttpMethod.POST, httpEntity,
 										String.class);
 						System.out.println(response);
