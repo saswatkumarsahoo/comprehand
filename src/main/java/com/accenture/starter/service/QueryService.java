@@ -57,8 +57,8 @@ public class QueryService {
 	static final int count = 10;
 	static long sinceId = 0;
 	static long numberOfTweets = 0;
-	static final String LOG_SERVICE_URL = "34.235.161.148";
-	static final String COMPREHAND_SERVICE_URL = "localhost";
+	static final String LOG_SERVICE_URL = "log";
+	static final String COMPREHAND_SERVICE_URL = "comprehand";
 
 	@Autowired
 	private PropertyfileReader propertyfileReader;
@@ -160,7 +160,7 @@ public class QueryService {
 							input.setText(status.getText());
 							Object data = postText(restTemplate, input);
 							
-							System.out.println("data-"+data);
+							System.out.println("data->"+data);
 							String log = createLog(status.getText(),
 									query.getQuery(),
 									data);
@@ -194,7 +194,7 @@ public class QueryService {
 	private static Object postText(RestTemplate restTemplate, Input input) {
 		HttpEntity<Input> httpEntity = new HttpEntity<Input>(input, null);
 		ResponseEntity<String> response = restTemplate.exchange("http://"
-				+ getComprehandServiceUrl() + ":8081/comprehand",
+				+ getComprehandServiceUrl() + ":8080/comprehand",
 				HttpMethod.POST, httpEntity, String.class);
 		System.out.println(response.getBody());
 		return response.getBody();
@@ -205,7 +205,7 @@ public class QueryService {
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(log, null);
 		ResponseEntity<String> response = restTemplate.exchange("http://"
-				+ getLogServiceUrl() + ":8082/log", HttpMethod.POST,
+				+ getLogServiceUrl() + ":8080/log", HttpMethod.POST,
 				httpEntity, String.class);
 		System.out.println(response);
 		return response;
