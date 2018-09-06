@@ -175,7 +175,7 @@ public class QueryService {
 						query.setMaxId(maxId - 1);
 					} catch (Exception ex) {
 						System.out.println("Error: " + ex);
-						System.exit(-1);
+						//System.exit(-1);
 					}
 				}
 			} catch (TwitterException te) {
