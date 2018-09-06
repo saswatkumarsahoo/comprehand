@@ -54,11 +54,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service("queryService")
 public class QueryService {
 	// static final String hashTag = "#edfenergy";
-	static final int count = 10;
+	static final int count = 100;
 	static long sinceId = 0;
 	static long numberOfTweets = 0;
 	static final String LOG_SERVICE_URL = "log";
-	static final String COMPREHAND_SERVICE_URL = "comprehand";
+	static final String COMPREHAND_SERVICE_URL = "localhost";
 
 	@Autowired
 	private PropertyfileReader propertyfileReader;
@@ -144,15 +144,14 @@ public class QueryService {
 		long whileCount = 0;
 		RestTemplate restTemplate = new RestTemplate();
 		Input input = new Input();
-
-		while (getTweets) {
-			try {
-				QueryResult result = twitter.search(query);
+		try {
+		QueryResult result = twitter.search(query);
+		while (getTweets) {		
 				if (result.getTweets() == null || result.getTweets().isEmpty()) {
 					getTweets = false;
 				} else {
 					int forCount = 0;
-					try {
+					
 						for (Status status : result.getTweets()) {
 							if (whileCount == 0 && forCount == 0) {
 								sinceId = status.getId();
@@ -173,9 +172,6 @@ public class QueryService {
 						numberOfTweets = numberOfTweets
 								+ result.getTweets().size();
 						query.setMaxId(maxId - 1);
-					} catch (Exception ex) {
-						System.out.println("Error: " + ex);
-						//System.exit(-1);
 					}
 				}
 			} catch (TwitterException te) {
@@ -183,10 +179,8 @@ public class QueryService {
 
 			} catch (Exception e) {
 				System.out.println("Something went wrong: " + e);
-				System.exit(-1);
-
-			}
-			whileCount++;
+				//System.exit(-1);
+			    whileCount++;
 		}
 		System.out.println("Total tweets count=======" + numberOfTweets);
 	}
