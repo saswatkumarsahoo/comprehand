@@ -179,7 +179,7 @@ public class QueryService {
 
 			} catch (Exception e) {
 				System.out.println("Something went wrong: " + e);
-				System.exit(-1);
+				//System.exit(-1);
 			    whileCount++;
 		}
 		System.out.println("Total tweets count=======" + numberOfTweets);
