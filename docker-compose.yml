@@ -1,0 +1,50 @@
+version: "3.0"
+services:
+  elasticsearch:
+    image: elasticsearch:latest
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - docker_elk
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+  kibana:
+    image: kibana:latest
+    ports:
+      - "80:5601"
+    networks:
+      - docker_elk
+  twitter:
+    image: saswat1988/twitter
+    environment:
+     - TWITTER_CONSUMER_KEY=7pBbM6dGmbAKyVSObQHVaPLmd
+     - TWITTER_CONSUMER_SECRET=qvbXenytXBUAbZLySEchS5YZvzLEFUYFerqZC8LuYbKqaG83W2
+     - TWITTER_ACCESS_TOKEN=ogBLtYna9ConGeWWyp9njXyFrUDHN7
+     - TWITTER_ACCESS_TOKEN_SECRET=5vdEnGLxeyldxFxUQB6TmhamUaAHTv1liGOHGbzUjPgJH
+    ports:
+     - "8080:8080"
+    networks:
+     - docker_elk
+  comprehand:
+    image: saswat1988/comprehand
+    environment:
+     - LOG_SERVICE_URL=log
+    ports:
+     - "8081:8080"
+    networks:
+     - docker_elk
+   log:
+    image: saswat1988/comprehand
+    environment:
+     - ES_URL=elasticsearch
+    ports:
+     - "8082:8080"
+    networks:
+     - docker_elk
+networks:
+  docker_elk:
+
+volumes:
+  es-data:
+    driver: local

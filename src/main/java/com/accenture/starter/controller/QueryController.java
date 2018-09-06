@@ -28,15 +28,14 @@ public class QueryController {
 
 	@RequestMapping(value = "/tweets")
 	@ResponseBody
-	public Outcome method9(@RequestParam("query") String query) {
+	public Outcome query(@RequestParam("query") String query) {
 		try {
-			
 			queryService.findTweets(query);
 		} catch (InterruptedException e) {
-			
+
 			e.printStackTrace();
 		}
-		return new Outcome(counter.incrementAndGet(),query, null);
+		return new Outcome(counter.incrementAndGet(), query, null);
 	}
 
 }
