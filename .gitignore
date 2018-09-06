@@ -12,4 +12,5 @@
 .sts4-cache
 twitter4j.properties
 Dockerfile
+docker-compose.yml
 
