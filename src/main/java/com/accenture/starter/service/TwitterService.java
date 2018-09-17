@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.accenture.starter.model.Input;
 import com.accenture.starter.model.Log;
 import com.accenture.starter.util.AwsClientBuilder;
 import com.accenture.starter.util.PropertyfileReader;
@@ -131,6 +132,7 @@ public class TwitterService {
 		long maxID = -1;
 		RestTemplate restTemplate = new RestTemplate();
 		Twitter twitter = getTwitter();
+		Input input = new Input();
 		try {
 			Map<String, RateLimitStatus> rateLimitStatus = twitter
 					.getRateLimitStatus("search");
@@ -169,7 +171,8 @@ public class TwitterService {
 					if (maxID == -1 || s.getId() < maxID) {
 						maxID = s.getId();
 					}
-					Object data = postText(restTemplate, cleanText(s.getText()));
+					input.setText(cleanText(s.getText()));
+					Object data = postText(restTemplate, input);
 					System.out.println("data->"+data);
 					String log = createLog(s.getText(),query, data);
 					System.out.println(postLog(restTemplate, log));
@@ -192,8 +195,8 @@ public class TwitterService {
 
 	}
 	
-	private static Object postText(RestTemplate restTemplate, String input) {
-		HttpEntity<String> httpEntity = new HttpEntity<String>(input, null);
+	private static Object postText(RestTemplate restTemplate, Input input) {
+		HttpEntity<Input> httpEntity = new HttpEntity<Input>(input, null);
 		ResponseEntity<String> response = restTemplate.exchange("http://"
 				+ getComprehandServiceUrl() + ":8080/comprehand",
 				HttpMethod.POST, httpEntity, String.class);
