@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.accenture.starter.model.Outcome;
 import com.accenture.starter.service.QueryService;
+import com.accenture.starter.service.TwitterService;
 
 /**
  * @author saswat.kumar.sahoo
@@ -23,6 +24,9 @@ public class QueryController {
 
 	@Autowired
 	private QueryService queryService;
+	@Autowired
+	private TwitterService twitterService;
+
 
 	private final AtomicLong counter = new AtomicLong();
 
@@ -30,8 +34,8 @@ public class QueryController {
 	@ResponseBody
 	public Outcome query(@RequestParam("query") String query) {
 		try {
-			queryService.findTweets(query);
-		} catch (InterruptedException e) {
+			twitterService.getTweets(query);
+		} catch (Exception e) {
 
 			e.printStackTrace();
 		}

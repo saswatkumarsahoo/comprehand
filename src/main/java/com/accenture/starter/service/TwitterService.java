@@ -118,8 +118,7 @@ public class TwitterService {
 		try {
 			Map<String, RateLimitStatus> rateLimitStatus = twitter
 					.getRateLimitStatus("search");
-			RateLimitStatus searchTweetsRateLimit = rateLimitStatus
-					.get("/search/tweets");
+			RateLimitStatus searchTweetsRateLimit = rateLimitStatus.get("/search/tweets");
 			System.out
 					.printf("You have %d calls remaining out of %d, Limit resets in %d seconds\n",
 							searchTweetsRateLimit.getRemaining(),
