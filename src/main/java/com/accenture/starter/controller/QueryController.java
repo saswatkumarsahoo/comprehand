@@ -34,7 +34,7 @@ public class QueryController {
 	@ResponseBody
 	public Outcome query(@RequestParam("query") String query) {
 		try {
-			twitterService.getTweets(query);
+			twitterServiceImpl.getTweets(query);
 		} catch (Exception e) {
 
 			e.printStackTrace();
