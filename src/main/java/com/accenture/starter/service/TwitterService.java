@@ -9,11 +9,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -48,14 +50,14 @@ public class TwitterService {
 	private LogService esLogService;
 	@Autowired
 	private AwsClientBuilder awsClientBuilder;
-	private static final String CONSUMER_KEY = System
+	/*private static final String CONSUMER_KEY = System
 			.getenv("TWITTER_CONSUMER_KEY") != null ? System
 			.getenv("TWITTER_CONSUMER_KEY") : propertyfileReader
 			.getProp("TWITTER_CONSUMER_KEY");
 	private static final String CONSUMER_SECRET = System
 			.getenv("TWITTER_CONSUMER_SECRET") != null ? System
 			.getenv("TWITTER_CONSUMER_SECRET") : propertyfileReader
-			.getProp("TWITTER_CONSUMER_SECRET");
+			.getProp("TWITTER_CONSUMER_SECRET");*/
 	private static final int TWEETS_PER_QUERY = 100;
 	private static final int MAX_QUERIES = 10;
 //	/private static final String SEARCH_TERM = "#a";
@@ -76,8 +78,14 @@ public class TwitterService {
 		cb = new ConfigurationBuilder();
 		cb.setApplicationOnlyAuthEnabled(true);
 
-		cb.setOAuthConsumerKey(CONSUMER_KEY).setOAuthConsumerSecret(
-				CONSUMER_SECRET);
+		cb.setOAuthConsumerKey(System
+				.getenv("TWITTER_CONSUMER_KEY") != null ? System
+						.getenv("TWITTER_CONSUMER_KEY") : propertyfileReader
+						.getProp("TWITTER_CONSUMER_KEY")).setOAuthConsumerSecret(
+								System
+								.getenv("TWITTER_CONSUMER_SECRET") != null ? System
+								.getenv("TWITTER_CONSUMER_SECRET") : propertyfileReader
+								.getProp("TWITTER_CONSUMER_SECRET"));
 
 		try {
 			token = new TwitterFactory(cb.build()).getInstance()
@@ -102,15 +110,23 @@ public class TwitterService {
 		token = getOAuth2Token();
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setApplicationOnlyAuthEnabled(true);
-		cb.setOAuthConsumerKey(CONSUMER_KEY);
-		cb.setOAuthConsumerSecret(CONSUMER_SECRET);
+		cb.setOAuthConsumerKey(System
+				.getenv("TWITTER_CONSUMER_KEY") != null ? System
+						.getenv("TWITTER_CONSUMER_KEY") : propertyfileReader
+						.getProp("TWITTER_CONSUMER_KEY"));
+		cb.setOAuthConsumerSecret(System
+				.getenv("TWITTER_CONSUMER_SECRET") != null ? System
+						.getenv("TWITTER_CONSUMER_SECRET") : propertyfileReader
+						.getProp("TWITTER_CONSUMER_SECRET"));
 		cb.setOAuth2TokenType(token.getTokenType());
 		cb.setOAuth2AccessToken(token.getAccessToken());
 		return new TwitterFactory(cb.build()).getInstance();
 
 	}
 
-	public void getTweets(String query) {
+	@Async
+	public CompletableFuture<?> findTweets(String query)
+			throws InterruptedException  {
 		int totalTweets = 0;
 		long maxID = -1;
 		RestTemplate restTemplate = new RestTemplate();
@@ -172,6 +188,7 @@ public class TwitterService {
 
 		}
 		System.out.printf("\n\nA total of %d tweets retrieved\n", totalTweets);
+		return CompletableFuture.completedFuture(null);
 
 	}
 	

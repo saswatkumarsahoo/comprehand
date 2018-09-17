@@ -22,10 +22,10 @@ import com.accenture.starter.service.TwitterService;
 @RestController
 public class QueryController {
 
+	/*@Autowired
+	private QueryService queryService;*/
 	@Autowired
-	private QueryService queryService;
-	@Autowired
-	private TwitterService twitterServiceImpl;
+	private TwitterService TwitterService;
 
 
 	private final AtomicLong counter = new AtomicLong();
@@ -34,7 +34,7 @@ public class QueryController {
 	@ResponseBody
 	public Outcome query(@RequestParam("query") String query) {
 		try {
-			twitterServiceImpl.getTweets(query);
+			TwitterService.findTweets(query);
 		} catch (Exception e) {
 
 			e.printStackTrace();
