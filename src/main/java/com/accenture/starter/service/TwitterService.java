@@ -39,7 +39,7 @@ import twitter4j.conf.ConfigurationBuilder;
  * @author saswat.kumar.sahoo
  *
  */
-@Service("twitterService")
+@Service("twitterServiceImpl")
 public class TwitterService {
 
 	@Autowired

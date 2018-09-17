@@ -25,7 +25,7 @@ public class QueryController {
 	@Autowired
 	private QueryService queryService;
 	@Autowired
-	private TwitterService twitterService;
+	private TwitterService twitterServiceImpl;
 
 
 	private final AtomicLong counter = new AtomicLong();
