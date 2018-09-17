@@ -171,7 +171,7 @@ public class TwitterService {
 					if (maxID == -1 || s.getId() < maxID) {
 						maxID = s.getId();
 					}
-					input.setText(cleanText(s.getText()));
+					input.setText(s.getText());
 					Object data = postText(restTemplate, input);
 					System.out.println("data->"+data);
 					String log = createLog(s.getText(),query, data);
@@ -205,12 +205,17 @@ public class TwitterService {
 	}
 
 	private static Object postLog(RestTemplate restTemplate, String log) {
-		System.out.println("postLog"+log);	
-		HttpEntity<String> httpEntity = new HttpEntity<String>(log, null);
-		ResponseEntity<String> response = restTemplate.exchange("http://"
-				+ getLogServiceUrl() + ":8080/logs/sentiments", HttpMethod.POST,
-				httpEntity, String.class);
-		System.out.println(response);
+		ResponseEntity<String> response = null;
+
+		try {
+			HttpEntity<String> httpEntity = new HttpEntity<String>(log, null);
+			response = restTemplate.exchange("http://" + getLogServiceUrl()
+					+ ":8080/logs/sentiments", HttpMethod.POST, httpEntity,
+					String.class);
+			System.out.println(response);
+		} catch (Exception ex) {
+			System.out.println("Error while posting log"+ex);
+		}
 		return response;
 	}
 
