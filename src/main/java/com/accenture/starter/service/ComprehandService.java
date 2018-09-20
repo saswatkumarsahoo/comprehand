@@ -18,8 +18,10 @@ import com.amazonaws.services.comprehend.model.DetectKeyPhrasesRequest;
 import com.amazonaws.services.comprehend.model.DetectKeyPhrasesResult;
 import com.amazonaws.services.comprehend.model.DetectSentimentRequest;
 import com.amazonaws.services.comprehend.model.DetectSentimentResult;
+import com.amazonaws.services.comprehend.model.DetectSyntaxRequest;
 import com.amazonaws.services.comprehend.model.Entity;
 import com.amazonaws.services.comprehend.model.KeyPhrase;
+import com.amazonaws.services.comprehend.model.SyntaxToken;
 
 /**
  * @author saswat.kumar.sahoo
@@ -51,6 +53,7 @@ public class ComprehandService {
 				.withText(text).withLanguageCode("en");
 		DetectKeyPhrasesResult detectKeyPhrasesResult = comprehendClient
 				.detectKeyPhrases(detectKeyPhrasesRequest);
+
 		return detectKeyPhrasesResult.getKeyPhrases();
 
 	}
@@ -64,12 +67,27 @@ public class ComprehandService {
 		return detectSentimentResult;
 	}
 
-	private static List<Entity> extractEntities(String text,
+	private static Map<String,Entity> extractEntities(String text,
 			AmazonComprehend comprehendClient) {
 		DetectEntitiesRequest detectEntitiesRequest = new DetectEntitiesRequest()
 				.withText(text).withLanguageCode("en");
 		DetectEntitiesResult detectEntitiesResult = comprehendClient
 				.detectEntities(detectEntitiesRequest);
-		return detectEntitiesResult.getEntities();
+		
+		Map<String,Entity> entities = new HashMap<String,Entity>();
+		for (Entity entity : detectEntitiesResult.getEntities()){
+			entities.put(entity.getType(), entity);
+		}
+		return entities;
+	}
+	
+	private static void extractSyntaxes(String text,
+			AmazonComprehend comprehendClient) {
+		DetectSyntaxRequest detectSyntaxRequest = new DetectSyntaxRequest()
+				.withText(text).withLanguageCode("en");
+		for (SyntaxToken token :comprehendClient.detectSyntax(detectSyntaxRequest).getSyntaxTokens()){
+			
+		}
+		
 	}
 }
