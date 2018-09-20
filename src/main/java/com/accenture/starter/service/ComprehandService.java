@@ -3,6 +3,7 @@
  */
 package com.accenture.starter.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,16 +68,27 @@ public class ComprehandService {
 		return detectSentimentResult;
 	}
 
-	private static Map<String,Entity> extractEntities(String text,
+	private static Map<String,List<Entity>> extractEntities(String text,
 			AmazonComprehend comprehendClient) {
 		DetectEntitiesRequest detectEntitiesRequest = new DetectEntitiesRequest()
 				.withText(text).withLanguageCode("en");
 		DetectEntitiesResult detectEntitiesResult = comprehendClient
 				.detectEntities(detectEntitiesRequest);
 		
-		Map<String,Entity> entities = new HashMap<String,Entity>();
+		Map<String,List<Entity>> entities = new HashMap<String,List<Entity>>();
 		for (Entity entity : detectEntitiesResult.getEntities()){
-			entities.put(entity.getType(), entity);
+			
+			if (entities.get(entity.getType()) == null){
+				List<Entity> e = new ArrayList<Entity>();
+				e.add(entity);
+				entities.put(entity.getType(), e);
+			}
+			else{
+				List<Entity> e = entities.get(entity.getType());
+				e.add(entity);
+				entities.put(entity.getType(), e);
+			}
+			
 		}
 		return entities;
 	}
