@@ -25,7 +25,7 @@ public class ComprehandController {
 	@PostMapping(value = "/comprehand")
 	@ResponseBody
 	public Object query(@RequestBody Input input) {
-		System.out.println(input.getText());
+		System.out.println(input);
 		return  comprehandService.analyzeText(input.getText());
 	}
 

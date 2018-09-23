@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service("esLogService")
 public class LogService {
 	
-	static final String ES_URL = "elasticsearch"; 
+	static final String ES_URL = "18.235.156.238"; 
 	public Object ingestToEs(String log, String type) {
 		
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity<?> httpEntity = new HttpEntity<String>(log, null);
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("Authorization", "Basic ZWxhc3RpYzpjaGFuZ2VtZQ==");
+			HttpEntity<?> httpEntity = new HttpEntity<String>(log, headers);
+			
 			System.out.println("******ES URL********"+getEsUrl());
 			ResponseEntity<String> response = restTemplate.exchange("http://"+ getEsUrl() + ":9200/" + getEsIndex() + "/"+type,
 					HttpMethod.POST, httpEntity, String.class);

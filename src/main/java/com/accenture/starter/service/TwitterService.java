@@ -137,8 +137,7 @@ public class TwitterService {
 			Map<String, RateLimitStatus> rateLimitStatus = twitter
 					.getRateLimitStatus("search");
 			RateLimitStatus searchTweetsRateLimit = rateLimitStatus.get("/search/tweets");
-			System.out
-					.printf("You have %d calls remaining out of %d, Limit resets in %d seconds\n",
+			System.out.printf("You have %d calls remaining out of %d, Limit resets in %d seconds\n",
 							searchTweetsRateLimit.getRemaining(),
 							searchTweetsRateLimit.getLimit(),
 							searchTweetsRateLimit.getSecondsUntilReset());
@@ -209,8 +208,7 @@ public class TwitterService {
 
 		try {
 			HttpEntity<String> httpEntity = new HttpEntity<String>(log, null);
-			response = restTemplate.exchange("http://" + getLogServiceUrl()
-					+ ":8080/logs/sentiments", HttpMethod.POST, httpEntity,
+			response = restTemplate.exchange("http://" + getLogServiceUrl()+ ":8080/logs/sentiments", HttpMethod.POST, httpEntity,
 					String.class);
 			System.out.println(response);
 		} catch (Exception ex) {
